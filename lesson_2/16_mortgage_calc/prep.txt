@@ -16,7 +16,7 @@ GETS Loan duration months
   ASSIGN to variable
   
 CONVERT APR percent to monthly interest (divide APR by 12 and then by 100)
-  ASSIGN monthly interest to new variably
+  ASSIGN monthly interest to new variable
 CONVERT Loan duration years to months 
   ADD this amount with loan duration months and ASSIGN to new variable
   

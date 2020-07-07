@@ -1,0 +1,8 @@
+
+welcome: "-----Welcome to Amortized Loan Calculator!-----"
+description: "Use this calculator for basic calculations of common loan types"
+loan_amount: "What is the loan amount?"
+apr_amount: "What is the APR (percentage)?"
+monthly_term_amount: "Indicate loan term (in months)"
+error: "Enter positive number. Please try again"
+another_loan?: "Would you like to calculate another loan? (Y/N)"
