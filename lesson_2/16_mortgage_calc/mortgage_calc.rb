@@ -1,6 +1,3 @@
-require 'yaml'
-MESSAGES = YAML.load_file('mortgage_messages.yml')
-
 def prompt(message)
   puts "=> #{message}"
 end
@@ -18,12 +15,12 @@ def valid_number?(num, type = 'float')
   valid_integer
 end
 
-prompt MESSAGES['welcome']
-prompt MESSAGES['description']
+prompt "-----Welcome to Amortized Loan Calculator!-----"
+prompt "Use this calculator for basic calculations of common loan types"
 puts ""
 
 loop do
-  prompt MESSAGES['loan_amount']
+  prompt "What is the loan amount?"
   loan_amount = nil
 
   loop do
@@ -32,11 +29,11 @@ loop do
       loan_amount = loan_amount.to_f
       break
     else
-      prompt MESSAGES['error']
+      prompt "Enter positive number. Please try again"
     end
   end
 
-  prompt MESSAGES['apr_amount']
+  prompt "What is the APR (percentage)?"
   apr = nil
 
   loop do
@@ -45,11 +42,11 @@ loop do
       apr = apr.to_f
       break
     else
-      prompt MESSAGES['error']
+      prompt "Enter positive number. Please try again"
     end
   end
 
-  prompt MESSAGES['monthly_term_amount']
+  prompt "Indicate loan term (in months)"
   monthly_term = nil
 
   loop do
@@ -58,7 +55,7 @@ loop do
       monthly_term = monthly_term.to_i
       break
     else
-      prompt MESSAGES['error']
+      prompt "Enter positive number (no decimals). Please try again"
     end
   end
 
@@ -76,8 +73,10 @@ loop do
   prompt "Total interest: $#{total_interest.round(2)}"
   puts "---------------------------------------------------------------"
 
-  prompt MESSAGES['another_loan?']
+  prompt "Would you like to calculate another loan? (Y/N)"
   answer = gets.chomp
   break if answer.downcase != 'y'
   puts "---------------------------------------------------------------"
 end
+
+prompt('Goodbye!')
