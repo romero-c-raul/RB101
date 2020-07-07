@@ -1,0 +1,26 @@
+PRINT Welcome to Amortized Loan Calculator
+
+GETS Loan amount
+  VALIDATE Only positive integer/float values
+  ASSIGN to variable
+
+GETS APR in percent
+  VALIDATE Only positive integer/float values
+  ASSIGN to variable
+
+GETS Loan duration years
+  Validate only positive integers
+  ASSIGN to variable
+GETS Loan duration months
+  Validate only positive integers
+  ASSIGN to variable
+  
+CONVERT APR percent to monthly interest (divide APR by 12 and then by 100)
+  ASSIGN monthly interest to new variably
+CONVERT Loan duration years to months 
+  ADD this amount with loan duration months and ASSIGN to new variable
+  
+CALCULATE monthly payments using eq.
+CALCULATE total paid (monthly payments * total months)
+CALCULATE total interest (total paid - loan amount)
+

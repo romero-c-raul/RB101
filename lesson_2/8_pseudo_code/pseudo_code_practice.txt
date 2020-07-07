@@ -1,0 +1,59 @@
+# 1. a method that returns the sum of two integers
+
+---Casual---
+Given two integers
+Print the sum one the first integer and second integer
+
+--- Formal ---
+START
+
+# Given integer_one and integer_two
+
+PRINT interger_one plus integer_two
+
+END
+
+# 2. a method that takes an array of strings, and returns a string that 
+     is all those strings concatenated together
+
+--- Casual ---
+Given an array of strings
+Join array elements using array method
+
+--- Formal ---
+
+START
+
+# Given array_of_strings
+
+array_of_strings.join
+
+END
+
+# 3. a method that takes an array of integers, and returns a 
+     new array with every other element
+
+--- Casual ---
+Given an array of integers
+
+- Create new empty array
+- Iterate through array of integers and push only those with an even index
+  number to new array
+
+--- Formal ---
+
+START
+
+# given array_of_integers
+
+SET new_array = []
+
+ITERATE(element, idx) array_of_integers
+  IF idx is even
+    PUSH element to new_array
+  END
+END
+
+RETURN new_array
+
+END
