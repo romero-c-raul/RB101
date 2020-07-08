@@ -1,8 +1,11 @@
 
 welcome: "-----Welcome to Amortized Loan Calculator!-----"
-description: "Use this calculator for basic calculations of common loan types"
+description: "Use this calculator for basic calculations of common loan types" 
 loan_amount: "What is the loan amount?"
+non_zero_error: "Enter a non-zero number. Please try again."
 apr_amount: "What is the APR (percentage)?"
 monthly_term_amount: "Indicate loan term (in months)"
 error: "Enter positive number. Please try again"
-another_loan?: "Would you like to calculate another loan? (Y/N)"
+no_decimals_or_zero_error: "Enter positive number (no decimals, not zero). Please try again."
+another_loan?: "Would you like to calculate another loan? (Yes/No)."
+answer_error: 'Invalid Input. Please type Yes or No.'
