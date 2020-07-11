@@ -1,0 +1,23 @@
+----- General Structure -----
+
+DEFINE Valid choices for game
+DEFINE rules for winning (in a hash?)
+
+GETS input from player
+  VALIDATE from only valid choices
+COMPARE input from player with computer
+  SAMPLE from valid choices
+
+DISPLAY result (who won?)
+GETS input (do you want to play again?)
+
+----- Steps to modify code -----
+
+APPEND 'lizard' and 'spock' string to valid_choices 
+
+INIT a hash containing all valid choices and the moves they will win against
+  ex. choices_and_winning_moves = {"rock" => ['scissors', 'lizard'] etc
+  
+MODIFY def_win?(first, second)
+  if hash['first'].include?('second')
+end

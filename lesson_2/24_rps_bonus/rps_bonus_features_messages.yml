@@ -1,0 +1,17 @@
+
+welcome: "****** Welcome to Rock, Paper, Scissors, Lizard, Spock! ******"
+s_input_options: "Input 0 for scissors or 1 for spock"
+s_input_error: "Invalid input, please try again."
+player_winning_message: 'You won!'
+computer_winning_message: 'Computer won'
+tie_message: "It's a tie!"
+play_again?_message: 'Do you want to play again? (Yes/No)'
+play_again?_error: "Invalid input, please try again."
+score_title: "----------- Score -----------"
+divider: "-----------------------------"
+player_grandwinner_message: "You are the grand winner! Game is over!"
+computer_grandwinner_message: "The Computer is the grand winner! :( "
+game_header: " ****** Rock, Paper, Scissors, Lizard, Spock! ****** "
+key_input_choices: "Choose one: r - rock, p - paper, s - scissors or spock, l - lizard"
+validation_error: "That is not a valid choice, try again"
+goodbye_message: 'Thank you for playing. Goodbye!'
