@@ -118,7 +118,7 @@ loop do
     prompt MESSAGES['key_input_choices']
     choice = gets.chomp.downcase
     acceptable_key = convert_choice_to_key(choice)
-    
+
     if WINNING_MOVES.keys.include?(acceptable_key)
       break
     else
@@ -145,5 +145,3 @@ loop do
 end
 
 display_goodbye
-
-
