@@ -10,6 +10,7 @@ ACCEPTABLE_INPUTS = { "r" => "rock",
                       "p" => "paper",
                       "s" => ["scissors", "spock"],
                       "l" => "lizard" }
+GAME_WINNING_SCORE = 5
 
 def prompt(message)
   puts "=> #{message}"
@@ -18,6 +19,8 @@ end
 def welcome_message
   puts ""
   puts MESSAGES['welcome']
+  puts MESSAGES['winning_rules']
+  puts ""
 end
 
 def convert_choice_to_key(input)
@@ -49,6 +52,14 @@ def display_winner(player, computer)
   end
 end
 
+def update_score(player, computer, score)
+  if win?(player, computer)
+    score[:player] += 1
+  elsif win?(computer, player)
+    score[:computer] += 1
+  end
+end
+
 def display_choices(player, computer)
   prompt("You chose: #{player}; Computer chose: #{computer}")
 end
@@ -70,18 +81,19 @@ def display_score(player_counter, computer_counter)
   prompt MESSAGES["score_title"]
   prompt("Player: #{player_counter} | Computer: #{computer_counter}")
   prompt MESSAGES["divider"]
+  puts ""
 end
 
 def display_grand_winner(player_counter, computer_counter)
-  if player_counter == 5
+  if player_counter == GAME_WINNING_SCORE
     prompt MESSAGES['player_grandwinner_message']
-  elsif computer_counter == 5
+  elsif computer_counter == GAME_WINNING_SCORE
     prompt MESSAGES['computer_grandwinner_message']
   end
 end
 
 def game_over_condition(player_counter, computer_counter)
-  player_counter == 5 || computer_counter == 5
+  player_counter == GAME_WINNING_SCORE || computer_counter == GAME_WINNING_SCORE
 end
 
 def answer_is_yes?(input)
@@ -93,24 +105,23 @@ def clear_terminal
   puts MESSAGES['game_header']
 end
 
-def increase_counter_player(winning_message)
-  winning_message == MESSAGES['player_winning_message'] ? 1 : 0
-end
-
-def increase_counter_computer(winning_message)
-  winning_message == MESSAGES['computer_winning_message'] ? 1 : 0
-end
-
 def display_goodbye
   prompt MESSAGES['goodbye_message']
 end
 
-welcome_message
+def reset_score(score)
+  score[:player] = 0
+  score[:computer] = 0
+  clear_terminal
+end
 
-player_win_counter = 0
-computer_win_counter = 0
+def start_next_round
+  puts "Press Enter to start next round"
+  gets.chomp
+  clear_terminal
+end
 
-loop do
+def obtain_player_input
   choice = ''
   acceptable_key = ''
 
@@ -120,28 +131,48 @@ loop do
     acceptable_key = convert_choice_to_key(choice)
 
     if WINNING_MOVES.keys.include?(acceptable_key)
-      break
+      return acceptable_key
     else
       prompt MESSAGES['validation_error']
     end
   end
+end
 
+def display_round_counter(counter)
+  puts "This is round ##{counter}!"
+end
+
+welcome_message
+
+score = { player: 0, computer: 0 }
+round_counter = 1
+
+loop do
+  display_round_counter(round_counter)
+
+  acceptable_key = obtain_player_input
   computer_choice = WINNING_MOVES.keys.sample
 
   display_choices(acceptable_key, computer_choice)
   determine_winner = display_winner(acceptable_key, computer_choice)
   prompt determine_winner
 
-  player_win_counter += increase_counter_player(determine_winner)
-  computer_win_counter += increase_counter_computer(determine_winner)
+  update_score(acceptable_key, computer_choice, score)
+  display_score(score[:player], score[:computer])
+  display_grand_winner(score[:player], score[:computer])
 
-  display_score(player_win_counter, computer_win_counter)
-  display_grand_winner(player_win_counter, computer_win_counter)
-  break if game_over_condition(player_win_counter, computer_win_counter)
+  if score[:player] == GAME_WINNING_SCORE ||
+     score[:computer] == GAME_WINNING_SCORE
+    answer = play_again?
+    break unless answer_is_yes?(answer)
+    reset_score(score)
+    round_counter = 1
+    next
+  end
 
-  answer = play_again?
-  break unless answer_is_yes?(answer)
-  clear_terminal
+  round_counter += 1
+
+  start_next_round
 end
 
 display_goodbye

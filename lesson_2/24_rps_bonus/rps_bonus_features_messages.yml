@@ -1,5 +1,6 @@
 
 welcome: "****** Welcome to Rock, Paper, Scissors, Lizard, Spock! ******"
+winning_rules: "First player to win 5 rounds wins the game!"
 s_input_options: "Input 0 for scissors or 1 for spock"
 s_input_error: "Invalid input, please try again."
 player_winning_message: 'You won!'
