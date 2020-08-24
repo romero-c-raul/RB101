@@ -54,23 +54,45 @@ def player_places_piece!(brd)
   brd[square] = PLAYER_MARKER
 end
 
-def computer_places_piece!(brd)
-  # Defensive move
+def defensive_mode(brd)
   WINNING_LINES.shuffle.each do |line|
-    if (brd[line[0]] == PLAYER_MARKER && brd[line[1]] == PLAYER_MARKER)
+    if brd[line[0]] == PLAYER_MARKER && brd[line[1]] == PLAYER_MARKER
       return brd[line[2]] = COMPUTER_MARKER if brd[line[2]] == INITIAL_MARKER
       next
-    elsif (brd[line[1]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER)
+    elsif brd[line[1]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER
       return brd[line[0]] = COMPUTER_MARKER if brd[line[0]] == INITIAL_MARKER
       next
-    elsif (brd[line[0]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER)
+    elsif brd[line[0]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER
       return brd[line[1]] = COMPUTER_MARKER if brd[line[1]] == INITIAL_MARKER
       next
     end
   end
+  nil
+end
+
+def offensive_mode(brd)
+  WINNING_LINES.shuffle.each do |line|
+    if brd[line[0]] == COMPUTER_MARKER && brd[line[1]] == COMPUTER_MARKER
+      return brd[line[2]] = COMPUTER_MARKER if brd[line[2]] == INITIAL_MARKER
+      next
+    elsif brd[line[1]] == COMPUTER_MARKER && brd[line[2]] == COMPUTER_MARKER
+      return brd[line[0]] = COMPUTER_MARKER if brd[line[0]] == INITIAL_MARKER
+      next
+    elsif brd[line[0]] == COMPUTER_MARKER && brd[line[2]] == COMPUTER_MARKER
+      return brd[line[1]] = COMPUTER_MARKER if brd[line[1]] == INITIAL_MARKER
+      next
+    end
+  end
+  nil
+end
+
+def computer_places_piece!(brd)
   
+  run_defensive_mode = !!offensive_mode(brd)
+  random_placement = !!defensive_mode(brd) if run_defensive_mode != true
+
   square = empty_squares(brd).sample
-  brd[square] = COMPUTER_MARKER
+  brd[square] = COMPUTER_MARKER if random_placement == false
 end
 
 def board_full?(brd)
@@ -130,9 +152,9 @@ def display_scores(wins_tracker)
 end
 
 def game_won?(wins_tracker)
-  if wins_tracker[:player_wins] >= WINNING_ROUNDS || 
+  if wins_tracker[:player_wins] >= WINNING_ROUNDS ||
      wins_tracker[:computer_wins] >= WINNING_ROUNDS
-    return true
+    true
   end
 end
 
@@ -147,8 +169,7 @@ def announce_game_winner(game_winner)
 end
 
 wins_tracker = { player_wins: 0,
-                 computer_wins: 0
-}
+                 computer_wins: 0 }
 
 loop do
   board = initialize_board
@@ -167,7 +188,7 @@ loop do
   display_winner(board)
   update_wins_tracker(detect_winner(board), wins_tracker)
   display_scores(wins_tracker)
-  
+
   break if game_won?(wins_tracker)
 
   prompt "Press enter to start next round!"
