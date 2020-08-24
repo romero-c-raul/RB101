@@ -86,13 +86,17 @@ def offensive_mode(brd)
   nil
 end
 
-def computer_places_piece!(brd)
+def computer_places_piece!(brd, computer_turn)
+  if empty_squares(brd).include?(5) && computer_turn == 3
+    return brd[5] = COMPUTER_MARKER
+  end
   
   run_defensive_mode = !!offensive_mode(brd)
   random_placement = !!defensive_mode(brd) if run_defensive_mode != true
 
   square = empty_squares(brd).sample
   brd[square] = COMPUTER_MARKER if random_placement == false
+  computer_turn += 1
 end
 
 def board_full?(brd)
@@ -173,14 +177,15 @@ wins_tracker = { player_wins: 0,
 
 loop do
   board = initialize_board
-
+  computer_turn = 1
   loop do
     display_board(board)
 
     player_places_piece!(board)
     break if someone_won?(board) || board_full?(board)
 
-    computer_places_piece!(board)
+    computer_places_piece!(board, computer_turn)
+    computer_turn += 1
     break if someone_won?(board) || board_full?(board)
   end
 
