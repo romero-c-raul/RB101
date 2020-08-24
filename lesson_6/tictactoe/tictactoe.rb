@@ -54,7 +54,23 @@ def player_places_piece!(brd)
   brd[square] = PLAYER_MARKER
 end
 
+# def computer_places_piece!(brd)
+#   square = empty_squares(brd).sample
+#   brd[square] = COMPUTER_MARKER
+# end
+
 def computer_places_piece!(brd)
+  # Defensive move
+  WINNING_LINES.shuffle.each do |line|
+    if (brd[line[0]] == PLAYER_MARKER && brd[line[1]] == PLAYER_MARKER)
+      return brd[line[2]] = COMPUTER_MARKER if brd[line[2]] == INITIAL_MARKER
+      next
+    elsif (brd[line[1]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER)
+      return brd[line[0]] = COMPUTER_MARKER if brd[line[0]] == INITIAL_MARKER
+      next
+    end
+  end
+  
   square = empty_squares(brd).sample
   brd[square] = COMPUTER_MARKER
 end
