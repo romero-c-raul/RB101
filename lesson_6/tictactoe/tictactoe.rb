@@ -3,6 +3,7 @@ require 'pry'
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
                 [[1, 5, 9], [3, 5, 7]]
+WINNING_ROUNDS = 5
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -79,7 +80,7 @@ end
 
 def display_winner(brd)
   if someone_won?(brd)
-    prompt "#{detect_winner(brd)} won!"
+    prompt "#{detect_winner(brd)} won this round!"
   else
     prompt "Is a tie!"
   end
@@ -100,6 +101,41 @@ def joinor(array, punctuation=",", conjunction='or')
   end
 end
 
+def update_wins_tracker(winner_detection, wins_tracker)
+  case winner_detection
+  when 'Player'
+    wins_tracker[:player_wins] += 1
+  when 'Computer'
+    wins_tracker[:computer_wins] += 1
+  end
+end
+
+def display_scores(wins_tracker)
+  prompt "Player score: #{wins_tracker[:player_wins]}"
+  prompt "Computer score: #{wins_tracker[:computer_wins]}"
+end
+
+def game_won?(wins_tracker)
+  if wins_tracker[:player_wins] >= WINNING_ROUNDS || 
+     wins_tracker[:computer_wins] >= WINNING_ROUNDS
+    return true
+  end
+end
+
+def determine_game_winner(wins_tracker)
+  return 'Player' if wins_tracker[:player_wins] >= WINNING_ROUNDS
+  return 'Computer' if wins_tracker[:computer_wins] >= WINNING_ROUNDS
+end
+
+def announce_game_winner(game_winner)
+  prompt("--------------------")
+  prompt("#{game_winner} won the game!")
+end
+
+wins_tracker = { player_wins: 0,
+                 computer_wins: 0
+}
+
 loop do
   board = initialize_board
 
@@ -115,10 +151,16 @@ loop do
 
   display_board(board)
   display_winner(board)
+  update_wins_tracker(detect_winner(board), wins_tracker)
+  display_scores(wins_tracker)
+  
+  break if game_won?(wins_tracker)
 
-  prompt "Play again? (y or n)"
-  answer = gets.chomp
-  break unless answer.downcase.start_with?('y')
+  prompt "Press enter to start next round!"
+  gets.chomp
 end
 
-prompt "Thanks for playinc Tic Tac Toe! Goodbye!"
+winner = determine_game_winner(wins_tracker)
+announce_game_winner(winner)
+
+prompt "Thanks for playing Tic Tac Toe! Goodbye!"
