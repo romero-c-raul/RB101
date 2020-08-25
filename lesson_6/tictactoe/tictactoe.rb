@@ -1,9 +1,11 @@
 require 'pry'
 
+FIRST_MOVE = 'CHOOSE' # 'PLAYER', 'COMPUTER', 'CHOOSE'
+WINNING_ROUNDS = 5
+
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
                 [[1, 5, 9], [3, 5, 7]]
-WINNING_ROUNDS = 5
 
 INITIAL_MARKER = ' '
 PLAYER_MARKER = 'X'
@@ -90,13 +92,12 @@ def computer_places_piece!(brd, computer_turn)
   if empty_squares(brd).include?(5) && computer_turn == 3
     return brd[5] = COMPUTER_MARKER
   end
-  
+
   run_defensive_mode = !!offensive_mode(brd)
   random_placement = !!defensive_mode(brd) if run_defensive_mode != true
 
   square = empty_squares(brd).sample
   brd[square] = COMPUTER_MARKER if random_placement == false
-  computer_turn += 1
 end
 
 def board_full?(brd)
@@ -172,21 +173,53 @@ def announce_game_winner(game_winner)
   prompt("#{game_winner} won the game!")
 end
 
+def first_move?
+  system 'clear'
+  acceptable_input = ['1', '2']
+  player_input = ''
+  prompt "Who will go first?"
+
+  loop do
+    prompt "Input 1 for PLAYER; Input 2 for COMPUTER"
+    player_input = gets.chomp
+    break if acceptable_input.include?(player_input)
+    prompt "That is not an acceptable input. Please try again!"
+  end
+
+  case player_input
+  when '1'
+    'PLAYER'
+  when '2'
+    'COMPUTER'
+  end
+end
+
+FIRST_MOVE = first_move? if FIRST_MOVE == 'CHOOSE'
+
 wins_tracker = { player_wins: 0,
                  computer_wins: 0 }
 
 loop do
   board = initialize_board
-  computer_turn = 1
+  turn = 1
   loop do
     display_board(board)
 
-    player_places_piece!(board)
-    break if someone_won?(board) || board_full?(board)
+    case FIRST_MOVE
+    when 'PLAYER'
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+      computer_places_piece!(board, turn)
+      break if someone_won?(board) || board_full?(board)
+    when 'COMPUTER'
+      computer_places_piece!(board, turn)
+      break if someone_won?(board) || board_full?(board)
+      display_board(board)
+      player_places_piece!(board)
+      break if someone_won?(board) || board_full?(board)
+    end
 
-    computer_places_piece!(board, computer_turn)
-    computer_turn += 1
-    break if someone_won?(board) || board_full?(board)
+    turn += 1
   end
 
   display_board(board)
