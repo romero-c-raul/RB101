@@ -1,4 +1,5 @@
-require 'pry'
+require 'yaml'
+MESSAGES = YAML.load_file('tictactoe_messages.yml')
 
 FIRST_MOVE = 'CHOOSE' # 'PLAYER', 'COMPUTER', 'CHOOSE'
 WINNING_ROUNDS = 5
@@ -48,10 +49,11 @@ def player_places_piece!(brd)
   square = ''
 
   loop do
-    prompt "Choose a square (#{joinor(empty_squares(brd))}):"
+    #prompt "Choose a square (#{joinor(empty_squares(brd))}):"
+    prompt "#{MESSAGES['choose_square']} (#{joinor(empty_squares(brd))}):"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
-    prompt "Sorry, that is not a valid choice. "
+    prompt MESSAGES['not_a_valid_choice']
   end
   brd[square] = PLAYER_MARKER
 end
@@ -121,9 +123,9 @@ end
 
 def display_winner(brd)
   if someone_won?(brd)
-    prompt "#{detect_winner(brd)} won this round!"
+    prompt "#{detect_winner(brd)} #{MESSAGES['won_round']}"
   else
-    prompt "Is a tie!"
+    prompt MESSAGES['tie_round']
   end
 end
 
@@ -170,7 +172,7 @@ end
 
 def announce_game_winner(game_winner)
   prompt("--------------------")
-  prompt("#{game_winner} won the game!")
+  prompt("#{game_winner} #{MESSAGES['won_game']}")
 end
 
 def return_inital_player(player_input)
@@ -186,13 +188,13 @@ def first_move?
   system 'clear'
   acceptable_input = ['1', '2']
   player_input = ''
-  prompt "Who will go first?"
+  prompt MESSAGES['first_player_question']
 
   loop do
-    prompt "Input 1 for PLAYER; Input 2 for COMPUTER"
+    prompt MESSAGES['ask_for_input']
     player_input = gets.chomp
     break if acceptable_input.include?(player_input)
-    prompt "That is not an acceptable input. Please try again!"
+    prompt MESSAGES['incorrect_input']
   end
 
   return_inital_player(player_input)
@@ -214,6 +216,11 @@ def alternate_player(current_player)
   when 'COMPUTER'
     'PLAYER'
   end
+end
+
+def press_enter_to_continue
+  prompt MESSAGES['next_round_starting']
+  gets.chomp
 end
 
 FIRST_MOVE = first_move? if FIRST_MOVE == 'CHOOSE'
@@ -242,12 +249,10 @@ loop do
   display_scores(wins_tracker)
 
   break if game_won?(wins_tracker)
-
-  prompt "Press enter to start next round!"
-  gets.chomp
+  press_enter_to_continue
 end
 
 winner = determine_game_winner(wins_tracker)
 announce_game_winner(winner)
 
-prompt "Thanks for playing Tic Tac Toe! Goodbye!"
+prompt MESSAGES['goodbye_message']
