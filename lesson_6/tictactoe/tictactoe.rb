@@ -1,7 +1,7 @@
 require 'yaml'
 MESSAGES = YAML.load_file('tictactoe_messages.yml')
 
-FIRST_MOVE = 'CHOOSE' # 'PLAYER', 'COMPUTER', 'CHOOSE'
+FIRST_MOVE = 'COMPUTER' # 'PLAYER', 'COMPUTER', 'CHOOSE'
 WINNING_ROUNDS = 5
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
@@ -251,7 +251,7 @@ display_welcome_message
 press_enter_to_start_game if FIRST_MOVE == 'PLAYER' ||
                              FIRST_MOVE == 'COMPUTER'
 
-current_player = first_move? if FIRST_MOVE == 'CHOOSE'
+FIRST_MOVE = first_move? if FIRST_MOVE == 'CHOOSE'
 
 wins_tracker = { player_wins: 0,
                  computer_wins: 0 }
@@ -259,7 +259,8 @@ wins_tracker = { player_wins: 0,
 loop do
   board = initialize_board
   turn = 1
-
+  current_player = FIRST_MOVE
+  
   loop do
     display_board(board, wins_tracker)
     display_symbols
