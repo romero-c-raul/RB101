@@ -90,7 +90,7 @@ end
 
 def computer_places_piece!(brd, computer_turn)
   if empty_squares(brd).include?(5) && computer_turn == 3
-    return brd[5] = COMPUTER_MARKER
+    return brd[5] = COMPUTER_MARKER if FIRST_MOVE == 'PLAYER'
   end
 
   run_defensive_mode = !!offensive_mode(brd)
@@ -173,6 +173,15 @@ def announce_game_winner(game_winner)
   prompt("#{game_winner} won the game!")
 end
 
+def return_inital_player(player_input)
+  case player_input
+  when '1'
+    'PLAYER'
+  when '2'
+    'COMPUTER'
+  end
+end
+
 def first_move?
   system 'clear'
   acceptable_input = ['1', '2']
@@ -186,11 +195,24 @@ def first_move?
     prompt "That is not an acceptable input. Please try again!"
   end
 
-  case player_input
-  when '1'
-    'PLAYER'
-  when '2'
+  return_inital_player(player_input)
+end
+
+def place_piece!(brd, current_player, turn)
+  case current_player
+  when 'PLAYER'
+    player_places_piece!(brd)
+  when 'COMPUTER'
+    computer_places_piece!(brd, turn)
+  end
+end
+
+def alternate_player(current_player)
+  case current_player
+  when 'PLAYER'
     'COMPUTER'
+  when 'COMPUTER'
+    'PLAYER'
   end
 end
 
@@ -202,24 +224,16 @@ wins_tracker = { player_wins: 0,
 loop do
   board = initialize_board
   turn = 1
+  current_player = FIRST_MOVE
+
   loop do
     display_board(board)
 
-    case FIRST_MOVE
-    when 'PLAYER'
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-      computer_places_piece!(board, turn)
-      break if someone_won?(board) || board_full?(board)
-    when 'COMPUTER'
-      computer_places_piece!(board, turn)
-      break if someone_won?(board) || board_full?(board)
-      display_board(board)
-      player_places_piece!(board)
-      break if someone_won?(board) || board_full?(board)
-    end
+    place_piece!(board, current_player, turn)
+    turn += 1 if current_player == 'COMPUTER'
+    current_player = alternate_player(current_player)
 
-    turn += 1
+    break if someone_won?(board) || board_full?(board)
   end
 
   display_board(board)
