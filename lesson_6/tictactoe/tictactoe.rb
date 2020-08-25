@@ -16,11 +16,16 @@ def prompt(msg)
   puts "=> #{msg}"
 end
 
+def display_symbols
+  prompt "PLAYER places 'X'"
+  prompt "COMPUTER places 'O'"
+  puts MESSAGES['divider']
+end
+
 # rubocop:disable Metrics/AbcSize
 def display_board(brd, wins_tracker)
   system 'clear'
   display_scores(wins_tracker)
-  
   puts ""
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}  "
@@ -51,7 +56,7 @@ def player_places_piece!(brd)
   square = ''
 
   loop do
-    #prompt "Choose a square (#{joinor(empty_squares(brd))}):"
+    # prompt "Choose a square (#{joinor(empty_squares(brd))}):"
     prompt "#{MESSAGES['choose_square']} (#{joinor(empty_squares(brd))}):"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
@@ -231,9 +236,22 @@ def display_welcome_message
   puts MESSAGES['divider']
 end
 
-display_welcome_message
+def press_enter_to_start_game
+  case FIRST_MOVE
+  when 'PLAYER'
+    prompt 'PLAYER goes first!'
+  when 'COMPUTER'
+    prompt 'COMPUTER goes first!'
+  end
+  prompt MESSAGES['start_game']
+  gets.chomp
+end
 
-FIRST_MOVE = first_move? if FIRST_MOVE == 'CHOOSE'
+display_welcome_message
+press_enter_to_start_game if FIRST_MOVE == 'PLAYER' ||
+                             FIRST_MOVE == 'COMPUTER'
+
+current_player = first_move? if FIRST_MOVE == 'CHOOSE'
 
 wins_tracker = { player_wins: 0,
                  computer_wins: 0 }
@@ -241,10 +259,10 @@ wins_tracker = { player_wins: 0,
 loop do
   board = initialize_board
   turn = 1
-  current_player = FIRST_MOVE
 
   loop do
     display_board(board, wins_tracker)
+    display_symbols
 
     place_piece!(board, current_player, turn)
     turn += 1 if current_player == 'COMPUTER'
