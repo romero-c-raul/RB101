@@ -17,8 +17,10 @@ def prompt(msg)
 end
 
 # rubocop:disable Metrics/AbcSize
-def display_board(brd)
+def display_board(brd, wins_tracker)
   system 'clear'
+  display_scores(wins_tracker)
+  
   puts ""
   puts "     |     |"
   puts "  #{brd[1]}  |  #{brd[2]}  |  #{brd[3]}  "
@@ -127,6 +129,7 @@ def display_winner(brd)
   else
     prompt MESSAGES['tie_round']
   end
+  puts MESSAGES['divider']
 end
 
 def joinor(array, punctuation=",", conjunction='or')
@@ -185,7 +188,6 @@ def return_inital_player(player_input)
 end
 
 def first_move?
-  system 'clear'
   acceptable_input = ['1', '2']
   player_input = ''
   prompt MESSAGES['first_player_question']
@@ -223,6 +225,14 @@ def press_enter_to_continue
   gets.chomp
 end
 
+def display_welcome_message
+  system 'clear'
+  puts MESSAGES['welcome_message']
+  puts MESSAGES['divider']
+end
+
+display_welcome_message
+
 FIRST_MOVE = first_move? if FIRST_MOVE == 'CHOOSE'
 
 wins_tracker = { player_wins: 0,
@@ -234,7 +244,7 @@ loop do
   current_player = FIRST_MOVE
 
   loop do
-    display_board(board)
+    display_board(board, wins_tracker)
 
     place_piece!(board, current_player, turn)
     turn += 1 if current_player == 'COMPUTER'
@@ -243,7 +253,7 @@ loop do
     break if someone_won?(board) || board_full?(board)
   end
 
-  display_board(board)
+  display_board(board, wins_tracker)
   display_winner(board)
   update_wins_tracker(detect_winner(board), wins_tracker)
   display_scores(wins_tracker)
