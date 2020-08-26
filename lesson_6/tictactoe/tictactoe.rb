@@ -1,7 +1,8 @@
+require 'pry'
 require 'yaml'
 MESSAGES = YAML.load_file('tictactoe_messages.yml')
 
-FIRST_MOVE = 'COMPUTER' # 'PLAYER', 'COMPUTER', 'CHOOSE'
+FIRST_MOVE = 'CHOOSE' # 'PLAYER', 'COMPUTER', 'CHOOSE'
 WINNING_ROUNDS = 5
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
@@ -56,7 +57,6 @@ def player_places_piece!(brd)
   square = ''
 
   loop do
-    # prompt "Choose a square (#{joinor(empty_squares(brd))}):"
     prompt "#{MESSAGES['choose_square']} (#{joinor(empty_squares(brd))}):"
     square = gets.chomp.to_i
     break if empty_squares(brd).include?(square)
@@ -65,34 +65,30 @@ def player_places_piece!(brd)
   brd[square] = PLAYER_MARKER
 end
 
-def defensive_mode(brd)
+def offensive_mode(brd)
   WINNING_LINES.shuffle.each do |line|
-    if brd[line[0]] == PLAYER_MARKER && brd[line[1]] == PLAYER_MARKER
-      return brd[line[2]] = COMPUTER_MARKER if brd[line[2]] == INITIAL_MARKER
-      next
-    elsif brd[line[1]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER
-      return brd[line[0]] = COMPUTER_MARKER if brd[line[0]] == INITIAL_MARKER
-      next
-    elsif brd[line[0]] == PLAYER_MARKER && brd[line[2]] == PLAYER_MARKER
-      return brd[line[1]] = COMPUTER_MARKER if brd[line[1]] == INITIAL_MARKER
-      next
+    circle_count = 0
+    empty_square = ''
+    line.each do |square|
+      circle_count += 1 if brd[square] == 'O'
+      empty_square = square if brd[square] == ' '
     end
+    return brd[empty_square] = 'O' if circle_count == 2 && empty_square != ''
+    next
   end
   nil
 end
 
-def offensive_mode(brd)
+def defensive_mode(brd)
   WINNING_LINES.shuffle.each do |line|
-    if brd[line[0]] == COMPUTER_MARKER && brd[line[1]] == COMPUTER_MARKER
-      return brd[line[2]] = COMPUTER_MARKER if brd[line[2]] == INITIAL_MARKER
-      next
-    elsif brd[line[1]] == COMPUTER_MARKER && brd[line[2]] == COMPUTER_MARKER
-      return brd[line[0]] = COMPUTER_MARKER if brd[line[0]] == INITIAL_MARKER
-      next
-    elsif brd[line[0]] == COMPUTER_MARKER && brd[line[2]] == COMPUTER_MARKER
-      return brd[line[1]] = COMPUTER_MARKER if brd[line[1]] == INITIAL_MARKER
-      next
+    cross_count = 0
+    empty_square = ''
+    line.each do |square|
+      cross_count += 1 if brd[square] == 'X'
+      empty_square = square if brd[square] == ' '
     end
+    return brd[empty_square] = 'O' if cross_count == 2 && empty_square != ''
+    next
   end
   nil
 end
@@ -107,6 +103,7 @@ def computer_places_piece!(brd, computer_turn)
 
   square = empty_squares(brd).sample
   brd[square] = COMPUTER_MARKER if random_placement == false
+  # binding.pry
 end
 
 def board_full?(brd)
@@ -260,7 +257,7 @@ loop do
   board = initialize_board
   turn = 1
   current_player = FIRST_MOVE
-  
+
   loop do
     display_board(board, wins_tracker)
     display_symbols
