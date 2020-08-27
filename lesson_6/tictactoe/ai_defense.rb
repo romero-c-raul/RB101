@@ -51,3 +51,22 @@ ALGORITHM
   p board = initialize_board
   computer_places_piece!(board)
   p board
+  
+=begin
+
+- Grab 5 during 3rd turn if available, and if it is Player turn first
+- Check for any offensive moves
+- Check for any defensive moves
+
+Second Algorithm for offense
+- Iterate through each winning line
+  - If there are 2 'O' within that line
+    - Add an "O" to the third line
+    - Stop Iteration
+    
+Second Algorithm for defense
+- Iterate through each Winning Line
+  - If there are 2 'X' within that line
+    - Add an "O" to the empty element
+    - Stop iteration
+    
