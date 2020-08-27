@@ -1,9 +1,8 @@
-require 'pry'
 require 'yaml'
 MESSAGES = YAML.load_file('tictactoe_messages.yml')
 
 FIRST_MOVE = 'CHOOSE' # 'PLAYER', 'COMPUTER', 'CHOOSE'
-WINNING_ROUNDS = 5
+WINNING_ROUNDS = 3
 
 WINNING_LINES = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] +
                 [[1, 4, 7], [2, 5, 8], [3, 6, 9]] +
@@ -58,11 +57,11 @@ def player_places_piece!(brd)
 
   loop do
     prompt "#{MESSAGES['choose_square']} (#{joinor(empty_squares(brd))}):"
-    square = gets.chomp.to_i
-    break if empty_squares(brd).include?(square)
+    square = gets.chomp
+    break if empty_squares(brd).map(&:to_s).include?(square)
     prompt MESSAGES['not_a_valid_choice']
   end
-  brd[square] = PLAYER_MARKER
+  brd[square.to_i] = PLAYER_MARKER
 end
 
 def offensive_mode(brd)
@@ -103,7 +102,6 @@ def computer_places_piece!(brd, computer_turn)
 
   square = empty_squares(brd).sample
   brd[square] = COMPUTER_MARKER if random_placement == false
-  # binding.pry
 end
 
 def board_full?(brd)
@@ -171,8 +169,8 @@ def game_won?(wins_tracker)
 end
 
 def determine_game_winner(wins_tracker)
-  return 'Player' if wins_tracker[:player_wins] >= WINNING_ROUNDS
-  return 'Computer' if wins_tracker[:computer_wins] >= WINNING_ROUNDS
+  return 'Player' if wins_tracker[:player_wins] > wins_tracker[:computer_wins]
+  return 'Computer' if wins_tracker[:computer_wins] > wins_tracker[:player_wins]
 end
 
 def announce_game_winner(game_winner)
@@ -222,9 +220,10 @@ def alternate_player(current_player)
   end
 end
 
-def press_enter_to_continue
+def press_enter_to_continue_or_exit_to_quit
   prompt MESSAGES['next_round_starting']
-  gets.chomp
+  answer = gets.chomp
+  return true if answer.downcase == "exit"
 end
 
 def display_welcome_message
@@ -233,7 +232,7 @@ def display_welcome_message
   puts MESSAGES['divider']
 end
 
-def press_enter_to_start_game
+def display_first_player_and_start_game
   case FIRST_MOVE
   when 'PLAYER'
     prompt 'PLAYER goes first!'
@@ -244,41 +243,61 @@ def press_enter_to_start_game
   gets.chomp
 end
 
-display_welcome_message
-press_enter_to_start_game if FIRST_MOVE == 'PLAYER' ||
-                             FIRST_MOVE == 'COMPUTER'
-
-FIRST_MOVE = first_move? if FIRST_MOVE == 'CHOOSE'
-
-wins_tracker = { player_wins: 0,
-                 computer_wins: 0 }
-
-loop do
-  board = initialize_board
-  turn = 1
-  current_player = FIRST_MOVE
+def play_again?
+  answer = ''
 
   loop do
-    display_board(board, wins_tracker)
-    display_symbols
-
-    place_piece!(board, current_player, turn)
-    turn += 1 if current_player == 'COMPUTER'
-    current_player = alternate_player(current_player)
-
-    break if someone_won?(board) || board_full?(board)
+    prompt "Play again? (y or n)"
+    answer = gets.chomp.downcase
+    acceptable_answers = ['yes', 'no', 'n', 'y']
+    break if acceptable_answers.include?(answer)
+    prompt "Invalid input. Please try again!"
   end
 
-  display_board(board, wins_tracker)
-  display_winner(board)
-  update_wins_tracker(detect_winner(board), wins_tracker)
-  display_scores(wins_tracker)
-
-  break if game_won?(wins_tracker)
-  press_enter_to_continue
+  answer.start_with?('n') ? true : false
 end
 
-winner = determine_game_winner(wins_tracker)
-announce_game_winner(winner)
+loop do
+  display_welcome_message
+  display_first_player_and_start_game if FIRST_MOVE == 'PLAYER' ||
+                                         FIRST_MOVE == 'COMPUTER'
+
+  current_player = FIRST_MOVE
+  current_player = first_move? if FIRST_MOVE == 'CHOOSE'
+
+  wins_tracker = { player_wins: 0,
+                   computer_wins: 0 }
+
+  loop do
+    board = initialize_board
+    turn = 1
+
+    loop do
+      display_board(board, wins_tracker)
+      display_symbols
+
+      place_piece!(board, current_player, turn)
+      turn += 1 if current_player == 'COMPUTER'
+      current_player = alternate_player(current_player)
+
+      break if someone_won?(board) || board_full?(board)
+    end
+
+    display_board(board, wins_tracker)
+    display_winner(board)
+    update_wins_tracker(detect_winner(board), wins_tracker)
+    display_scores(wins_tracker)
+
+    break if game_won?(wins_tracker)
+
+    continue = press_enter_to_continue_or_exit_to_quit
+    break if continue
+  end
+
+  winner = determine_game_winner(wins_tracker)
+  announce_game_winner(winner)
+
+  break if play_again?
+end
 
 prompt MESSAGES['goodbye_message']
