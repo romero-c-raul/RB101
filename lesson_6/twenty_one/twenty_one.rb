@@ -1,6 +1,9 @@
 CARD_SUITS = %w(Hearts Diamonds Clubs Spades)
 CARD_VALUES = %w(2 3 4 5 6 7 8 9 10 J Q K A)
 
+WHATEVER_ONE = 21 # Increase in increments of 10 from 21
+DEALER_LIMIT = WHATEVER_ONE - 4 
+
 def prompt(msg)
   puts "=> #{msg}"
 end
@@ -47,7 +50,7 @@ def deal_initial_hand(deck, player_hand, dealer_hand)
 end
 
 def calculate_ace_value(total_score)
-  total_score + 11 <= 21 ? 11 : 1
+  total_score + 11 <= WHATEVER_ONE ? 11 : 1
 end
 
 def calculate_hand_value(current_hand)
@@ -102,9 +105,9 @@ def hit_or_stay?
 end
 
 def player_lost_game?(hand_value)
-  if hand_value > 21
+  if hand_value > WHATEVER_ONE
     puts "--------------------"
-    prompt "You lost the game! Your score is over 21."
+    prompt "You lost the game! Your score is over #{WHATEVER_ONE}."
     true
   else
     false
@@ -112,9 +115,9 @@ def player_lost_game?(hand_value)
 end
 
 def dealer_lost_game?(hand_value)
-  if hand_value > 21
+  if hand_value > WHATEVER_ONE
     puts "--------------------"
-    prompt "You won the game! Dealer's score is over 21!"
+    prompt "You won the game! Dealer's score is over #{WHATEVER_ONE}!"
     true
   else
     false
@@ -162,13 +165,13 @@ def display_final_score(player_hand, dealer_hand)
 end
 
 def display_welcome_message
-  puts "***** Welcome to Twenty-One! *****"
+  puts "***** Welcome to Whatever-One! *****"
   puts ""
 end
 
 def display_instructions
-  prompt "The aim of the game is to try and get as close to 21 as possible!"
-  prompt "But if you go over 21, you lose immediately. Be careful!"
+  prompt "The aim of the game is to try and get as close to #{WHATEVER_ONE} as possible!"
+  prompt "But if you go over #{WHATEVER_ONE}, you lose immediately. Be careful!"
 end
 
 def press_enter_to_continue
@@ -194,7 +197,7 @@ def play_again?
 end
 
 def dealer_hit_or_stay?(hand_value)
-  if hand_value >= 17
+  if hand_value >= DEALER_LIMIT
     prompt "Dealer chose to stay..."
     true
   end
@@ -228,6 +231,7 @@ loop do
     player_hand << deal_cards(twenty_one_deck)
     display_player_hand(player_hand)
 
+    
     player_lost = player_lost_game?(calculate_hand_value(player_hand))
     break if player_lost
   end
