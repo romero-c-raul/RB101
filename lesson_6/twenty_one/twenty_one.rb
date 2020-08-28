@@ -73,10 +73,10 @@ end
 
 def display_player_hand(player_hand)
   cards = joinor(player_hand)
-  prompt "You have: #{cards} (for a total of #{calculate_hand_value(player_hand)})"
+  prompt "You have: #{cards} (total of #{calculate_hand_value(player_hand)})"
 end
 
-def hit_or_stay?
+def validate_answer
   acceptable_answers = ['hit', 'stay']
   answer = ''
   loop do
@@ -86,7 +86,12 @@ def hit_or_stay?
     break if acceptable_answers.include?(answer.downcase)
     prompt "Not a valid input. Please try again!"
   end
-  
+  answer
+end
+
+def hit_or_stay?
+  answer = validate_answer
+
   case answer.downcase
   when "stay"
     prompt "You chose to stay..."
@@ -118,9 +123,9 @@ end
 
 def calculate_winner(player_hand, dealer_hand)
   if calculate_hand_value(player_hand) > calculate_hand_value(dealer_hand)
-    return 'Player'
+    'Player'
   elsif calculate_hand_value(dealer_hand) > calculate_hand_value(player_hand)
-    return 'Dealer'
+    'Dealer'
   else
     false
   end
@@ -138,7 +143,7 @@ def display_winner(winner)
     puts "--------------------"
     prompt "It's a tie!"
   end
-end 
+end
 
 def anyone_lost?(player_lost, dealer_lost)
   return true if player_lost == true || dealer_lost == true
@@ -155,7 +160,6 @@ def display_final_score(player_hand, dealer_hand)
   prompt "Dealer's final score: #{calculate_hand_value(dealer_hand)}"
   puts "===================================="
 end
-
 
 def display_welcome_message
   puts "***** Welcome to Twenty-One! *****"
@@ -202,53 +206,52 @@ display_welcome_message
 display_instructions
 
 loop do
-
   press_enter_to_continue
-  
+
   twenty_one_deck = initialize_deck
-  
+
   player_hand = []
   dealer_hand = []
-  
+
   deal_initial_hand(twenty_one_deck, player_hand, dealer_hand)
-  
+
   display_dealer_hand(dealer_hand)
   display_player_hand(player_hand)
-  
+
   player_lost = nil
-  
+
   # Player turn
   loop do
     break if hit_or_stay?
-    
+
     prompt "You chose to hit!"
     player_hand << deal_cards(twenty_one_deck)
     display_player_hand(player_hand)
-    
+
     player_lost = player_lost_game?(calculate_hand_value(player_hand))
     break if player_lost
   end
-  
+
   dealer_lost = nil
-  
+
   # Dealer turn
   loop do
     break if player_lost
-    # break if calculate_hand_value(dealer_hand) >= 17
     break if dealer_hit_or_stay?(calculate_hand_value(dealer_hand))
     dealer_hand << deal_cards(twenty_one_deck)
     prompt "Dealer hits! Dealer's hand is now #{joinor(dealer_hand)}."
-    
-    dealer_lost = dealer_lost_game?(calculate_hand_value(dealer_hand)) 
+
+    dealer_lost = dealer_lost_game?(calculate_hand_value(dealer_hand))
+    break if dealer_lost
   end
-  
+
   # Compare cards if dealer and player stay
-  display_winner(calculate_winner(player_hand, dealer_hand)) unless anyone_lost?(player_lost, dealer_lost)
-  
+  final_scores = calculate_winner(player_hand, dealer_hand)
+  display_winner(final_scores) unless anyone_lost?(player_lost, dealer_lost)
+
   display_final_score(player_hand, dealer_hand)
-  
+
   break if play_again?
 end
 
 prompt "Thank you for playing Twenty-One!"
-
