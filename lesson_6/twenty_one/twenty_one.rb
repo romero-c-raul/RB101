@@ -1,5 +1,3 @@
-require 'pry'
-
 CARD_SUITS = %w(Hearts Diamonds Clubs Spades)
 CARD_VALUES = %w(2 3 4 5 6 7 8 9 10 J Q K A)
 
@@ -75,7 +73,7 @@ end
 
 def display_player_hand(player_hand)
   cards = joinor(player_hand)
-  prompt "You have: #{cards}"
+  prompt "You have: #{cards} (for a total of #{calculate_hand_value(player_hand)})"
 end
 
 def hit_or_stay?
@@ -148,6 +146,7 @@ def anyone_lost?(player_lost, dealer_lost)
 end
 
 def display_final_score(player_hand, dealer_hand)
+  puts ""
   puts "===================================="
   prompt "Player's final hand: #{joinor(player_hand)}"
   prompt "Player's final score: #{calculate_hand_value(player_hand)}"
@@ -190,6 +189,13 @@ def play_again?
   answer.start_with?('n') ? true : false
 end
 
+def dealer_hit_or_stay?(hand_value)
+  if hand_value >= 17
+    prompt "Dealer chose to stay..."
+    true
+  end
+end
+
 system 'clear'
 
 display_welcome_message
@@ -211,9 +217,11 @@ loop do
   
   player_lost = nil
   
+  # Player turn
   loop do
     break if hit_or_stay?
     
+    prompt "You chose to hit!"
     player_hand << deal_cards(twenty_one_deck)
     display_player_hand(player_hand)
     
@@ -223,19 +231,24 @@ loop do
   
   dealer_lost = nil
   
+  # Dealer turn
   loop do
     break if player_lost
-    break if calculate_hand_value(dealer_hand) >= 17
+    # break if calculate_hand_value(dealer_hand) >= 17
+    break if dealer_hit_or_stay?(calculate_hand_value(dealer_hand))
     dealer_hand << deal_cards(twenty_one_deck)
     prompt "Dealer hits! Dealer's hand is now #{joinor(dealer_hand)}."
     
-    dealer_lost = dealer_lost_game?(calculate_hand_value(dealer_hand))
+    dealer_lost = dealer_lost_game?(calculate_hand_value(dealer_hand)) 
   end
   
+  # Compare cards if dealer and player stay
   display_winner(calculate_winner(player_hand, dealer_hand)) unless anyone_lost?(player_lost, dealer_lost)
+  
   display_final_score(player_hand, dealer_hand)
   
   break if play_again?
 end
 
 prompt "Thank you for playing Twenty-One!"
+
