@@ -1,0 +1,22 @@
+hit_or_stay?: "Hit or Stay?"
+invalid_input: "Not a valid input. Please try again!"
+player_chose_stay: "You chose to stay..."
+busted_player_message: 'You lost this round! Your score is over'
+busted_dealer_message: "You won this round! Dealer's score is over"
+divider: "--------------------"
+player_won_round: 'You won this round!'
+player_lost_round: 'You lost this round!'
+tie_round: "It's a tie!"
+scoreboard_divider: "===================================="
+player_final_hand: "Player's final hand: "
+player_final_score: "Player's final score: "
+dealer_final_hand: "Dealer's final hand: "
+dealer_final_score: "Dealer's final score: "
+press_enter_to_continue: "Dealing cards... Press enter to continue."
+play_again?: "Play again? (y or n)"
+dealer_chose_stay: "Dealer chose to stay..."
+next_round_coming: "Get ready for next round!"
+player_grand_winner: "You are the grand winner of the tournament!"
+lost_tournament: "You are out of the tournament. Better luck next time!"
+goodbye_message: "Thank you for playing Twenty-One!"
+welcome_message: "***** Welcome to Whatever-One! *****"
