@@ -186,6 +186,7 @@ def display_instructions
   prompt "Try to get as close to #{WHATEVER_ONE} as possible!"
   prompt "But if you go over #{WHATEVER_ONE}, you lose immediately. Be careful!"
   prompt "First to win #{WINNING_ROUNDS} rounds wins the game."
+  puts "(top score limit can be changed in source code)"
   puts ""
 end
 
@@ -270,11 +271,11 @@ def display_game_winner(wins_tracker)
 end
 
 def display_player_hits
-  prompt "You chose to hit!"
+  prompt MESSAGES['player_hits']
 end
 
 def display_dealer_hits(dealer_hand)
-  prompt "Dealer hits! Dealer's hand is now #{joinor(dealer_hand)}."
+  prompt MESSAGES['dealer_hits'] + "#{joinor(dealer_hand)}."
 end
 
 system 'clear'
