@@ -113,7 +113,7 @@ def hit_or_stay?
   end
 end
 
-def player_lost_game?(hand_value)
+def player_busted?(hand_value)
   if hand_value > WHATEVER_ONE
     puts "--------------------"
     prompt MESSAGES['busted_player_message'] + " " + "#{WHATEVER_ONE}."
@@ -123,7 +123,7 @@ def player_lost_game?(hand_value)
   end
 end
 
-def dealer_lost_game?(hand_value)
+def dealer_busted?(hand_value)
   if hand_value > WHATEVER_ONE
     puts "--------------------"
     prompt MESSAGES['busted_dealer_message'] + " " + "#{WHATEVER_ONE}!"
@@ -309,7 +309,7 @@ loop do
       player_hand << deal_cards(twenty_one_deck)
       display_player_hand(player_hand)
 
-      player_lost = player_lost_game?(calculate_hand_value(player_hand))
+      player_lost = player_busted?(calculate_hand_value(player_hand))
       break if player_lost
     end
 
@@ -322,7 +322,7 @@ loop do
       dealer_hand << deal_cards(twenty_one_deck)
       display_dealer_hits(dealer_hand)
 
-      dealer_lost = dealer_lost_game?(calculate_hand_value(dealer_hand))
+      dealer_lost = dealer_busted?(calculate_hand_value(dealer_hand))
       break if dealer_lost
     end
 
