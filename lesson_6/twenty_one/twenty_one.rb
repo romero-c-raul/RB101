@@ -83,8 +83,8 @@ def display_player_hand(player_hand)
   prompt "You have: #{cards} (total of #{calculate_hand_value(player_hand)})"
 end
 
-def validate_answer
-  acceptable_answers = ['hit', 'stay']
+def validate_hit_or_stay_answer
+  acceptable_answers = ['hit', 'stay', 'h', 's']
   answer = ''
   loop do
     prompt MESSAGES['hit_or_stay?']
@@ -97,13 +97,18 @@ def validate_answer
 end
 
 def hit_or_stay?
-  answer = validate_answer
+  answer = validate_hit_or_stay_answer
 
   case answer.downcase
   when "stay"
     prompt MESSAGES['player_chose_stay']
     true
+  when 's'
+    prompt MESSAGES['player_chose_stay']
+    true
   when "hit"
+    false
+  when 'h'
     false
   end
 end
